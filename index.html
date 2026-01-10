@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>HWC33 – WG-Finanzen</title>
+  <title>HWC33 – WG Finances</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -52,11 +52,11 @@
     <div class="cardish">
       <div class="title">
         <i class="bi bi-wallet2" style="color:var(--accent);font-size:18px;"></i>
-        <h1>HWC33 – WG-Finanzen</h1>
-        <span id="meta" class="pill">lädt…</span>
+        <h1>HWC33 – WG Finances</h1>
+        <span id="meta" class="pill">loading…</span>
       </div>
       <div class="notice">
-        Da ist die WG-Finanzwebsite von HWC33. Oben siehst du, wer bezahlt hat. Unten siehst du den aktuellen Kontostand und die komplette Historie inkl. Belegen.
+        This is the HWC33 WG finance website. At the top you can see who has paid. Below you can see the current balance and the full transaction history including receipts.
       </div>
       <div class="mt-2">
         <span class="badgeish" id="fxPill"><i class="bi bi-currency-exchange"></i> EUR→CHF: –</span>
@@ -66,38 +66,39 @@
     <div class="grid2">
       <div class="cardish">
         <div class="sectionhead">
-          <h2><i class="bi bi-people"></i> Bezahlstatus</h2>
-          <span id="duePill" class="badgeish">offen: –</span>
+          <h2><i class="bi bi-people"></i> Payment status</h2>
+          <span id="duePill" class="badgeish">due: –</span>
         </div>
         <div id="paymentsList" class="rowgap"></div>
       </div>
 
       <div class="cardish">
         <div class="sectionhead">
-          <h2><i class="bi bi-piggy-bank"></i> Konto (CHF)</h2>
+          <h2><i class="bi bi-piggy-bank"></i> Account (CHF)</h2>
           <span id="balancePill" class="badgeish">–</span>
         </div>
         <div class="big" id="balanceCHF">CHF –</div>
         <div class="subbig">
+          The WG account balance
         </div>
       </div>
     </div>
 
     <div class="cardish">
       <div class="sectionhead">
-        <h2><i class="bi bi-clock-history"></i> Historie</h2>
+        <h2><i class="bi bi-clock-history"></i> History</h2>
         <span class="badgeish"><i class="bi bi-paperclip"></i> /receipts</span>
       </div>
       <div class="table-responsive">
         <table>
           <thead>
             <tr>
-              <th>Datum</th>
-              <th class="tcenter">Typ</th>
+              <th>Date</th>
+              <th class="tcenter">Type</th>
               <th class="tright">Original</th>
               <th class="tright">Δ CHF</th>
-              <th class="tcenter">Belege</th>
-              <th class="tright">Saldo CHF</th>
+              <th class="tcenter">Receipts</th>
+              <th class="tright">Balance CHF</th>
             </tr>
           </thead>
           <tbody id="historyBody"></tbody>
@@ -141,7 +142,7 @@
     async function main(){
       try{
         const res = await fetch("./data.yml", { cache:"no-store" });
-        if(!res.ok) throw new Error("data.yml nicht gefunden (Status " + res.status + ")");
+        if(!res.ok) throw new Error("data.yml not found (status " + res.status + ")");
         const text = await res.text();
         const data = jsyaml.load(text);
 
@@ -151,10 +152,10 @@
         const fxGlobal = Number(data?.fx?.eur_chf ?? 0.95) || 0.95;
 
         document.getElementById("fxPill").innerHTML = `<i class="bi bi-currency-exchange"></i> EUR→CHF: ${safe(fxGlobal.toFixed(4))}`;
-        document.getElementById("meta").textContent = "Stand: " + new Date().toLocaleString("de-CH");
+        document.getElementById("meta").textContent = "Last updated: " + new Date().toLocaleString("de-CH");
 
         const due = payments.reduce((acc,p)=>acc + (!!p.paid ? 0 : Number(p.amount_chf ?? p.amount ?? 0)), 0);
-        document.getElementById("duePill").textContent = "offen: " + fmtCHF(due);
+        document.getElementById("duePill").textContent = "due: " + fmtCHF(due);
 
         const list = document.getElementById("paymentsList");
         list.innerHTML = payments.map(p => {
@@ -203,13 +204,13 @@
           `;
         }).join("");
 
-        document.getElementById("historyBody").innerHTML = rows || `<tr><td colspan="6" class="muted">Keine Einträge</td></tr>`;
+        document.getElementById("historyBody").innerHTML = rows || `<tr><td colspan="6" class="muted">No entries</td></tr>`;
         document.getElementById("balanceCHF").textContent = fmtCHF(running);
         document.getElementById("balancePill").textContent = fmtCHF(running);
       } catch(e){
         const box = document.getElementById("errorBox");
         box.style.display = "block";
-        box.textContent = "Fehler: " + (e?.message || String(e));
+        box.textContent = "Error: " + (e?.message || String(e));
       }
     }
 
