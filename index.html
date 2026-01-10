@@ -10,69 +10,51 @@
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
 
   <style>
-    :root{
-      --bg:#0f1115;
-      --card:#171a21;
-      --muted:#a9b0bd;
-      --text:#e9ecf2;
-      --accent:#6ea8fe;
-      --good:#20c997;
-      --bad:#ff5c5c;
-      --line:#252a35;
-    }
+    :root{--bg:#0f1115;--card:#171a21;--muted:#a9b0bd;--text:#e9ecf2;--accent:#6ea8fe;--good:#20c997;--bad:#ff5c5c;--line:#252a35;}
     body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
-    .wrap{max-width:1000px;margin:0 auto;padding:18px;}
+    .wrap{max-width:1000px;margin:0 auto;padding:18px;display:grid;gap:14px;}
     .cardish{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);}
     .title{display:flex;align-items:center;gap:10px;margin:2px 0 14px 0;}
     .title h1{font-size:18px;margin:0;}
     .pill{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:12px;}
-    .rowgap{display:grid;gap:14px;}
-    .person{display:flex;align-items:center;justify-content:space-between;border-radius:14px;padding:12px 12px;border:1px solid var(--line);transition:transform .15s ease, box-shadow .15s ease;}
-    .person:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,.30);}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    @media (max-width:900px){.grid2{grid-template-columns:1fr;}}
+    .sectionhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .sectionhead h2{font-size:14px;margin:0;color:var(--accent);letter-spacing:.02em;text-transform:uppercase;}
+    .badgeish{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:4px 8px;border-radius:999px;font-size:12px;color:var(--muted);}
+    .rowgap{display:grid;gap:10px;}
+    .person{display:flex;align-items:center;justify-content:space-between;border-radius:14px;padding:12px 12px;border:1px solid var(--line);}
     .person.paid{background:linear-gradient(90deg, rgba(32,201,151,.15), rgba(32,201,151,.03));}
     .person.unpaid{background:linear-gradient(90deg, rgba(255,92,92,.15), rgba(255,92,92,.03));}
     .name{display:flex;align-items:center;gap:10px;font-weight:700;}
     .dot{width:10px;height:10px;border-radius:99px;}
     .dot.good{background:var(--good);}
     .dot.bad{background:var(--bad);}
-    .amt{font-variant-numeric:tabular-nums;color:var(--text);}
-    .amt small{color:var(--muted);font-weight:600;}
-    .sectionhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-    .sectionhead h2{font-size:14px;margin:0;color:var(--accent);letter-spacing:.02em;text-transform:uppercase;}
-    .muted{color:var(--muted);}
-    .big{font-size:28px;font-weight:800;letter-spacing:.01em;}
+    .big{font-size:28px;font-weight:800;}
     .subbig{font-size:12px;color:var(--muted);margin-top:2px;}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-    @media (max-width:900px){.grid2{grid-template-columns:1fr;}}
     table{width:100%;}
-    thead th{font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:#dfe6ff;background:rgba(110,168,254,.14);border-bottom:1px solid var(--line);padding:10px 10px;}
-    tbody td{padding:10px 10px;border-bottom:1px solid var(--line);color:var(--text);}
-    tbody tr:hover td{background:rgba(255,255,255,.02);}
+    thead th{font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:#dfe6ff;background:rgba(110,168,254,.14);border-bottom:1px solid var(--line);padding:10px;}
+    tbody td{padding:10px;border-bottom:1px solid var(--line);color:var(--text);}
     .tcenter{text-align:center;}
     .tright{text-align:right;}
     .in{color:var(--good);font-weight:800;}
     .out{color:var(--bad);font-weight:800;}
-    .badgeish{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:4px 8px;border-radius:999px;font-size:12px;color:var(--muted);}
+    .muted{color:var(--muted);}
     .links a{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.03);text-decoration:none;margin-right:6px;}
     .links a:hover{border-color:rgba(110,168,254,.55);}
-    .notice{border:1px dashed rgba(110,168,254,.45);background:rgba(110,168,254,.07);border-radius:16px;padding:12px;color:#d8e6ff;}
-    .smallcaps{font-size:12px;color:var(--muted);}
-    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;padding:2px 8px;color:#dfe6ff;}
     .err{border:1px solid rgba(255,92,92,.4);background:rgba(255,92,92,.08);border-radius:16px;padding:12px;color:#ffd5d5;}
   </style>
 </head>
 
 <body>
-  <div class="wrap rowgap">
+  <div class="wrap">
     <div class="cardish">
       <div class="title">
         <i class="bi bi-wallet2" style="color:var(--accent);font-size:18px;"></i>
         <h1>WG-Gelder</h1>
         <span id="meta" class="pill">lädt…</span>
       </div>
-      <div class="notice">
-        GitHub Pages ist statisch: keine Server-Saves. Verwaltung läuft über <span class="kbd">data.yml</span> und Dateien in <span class="kbd">/receipts</span>. Neue Belege: Datei in <span class="kbd">/receipts</span> legen + Eintrag in <span class="kbd">history</span>.
-      </div>
+      <div class="badgeish" id="fxPill"><i class="bi bi-currency-exchange"></i> EUR→CHF: –</div>
     </div>
 
     <div class="grid2">
@@ -86,22 +68,18 @@
 
       <div class="cardish">
         <div class="sectionhead">
-          <h2><i class="bi bi-piggy-bank"></i> Aktueller Betrag</h2>
+          <h2><i class="bi bi-piggy-bank"></i> Konto (CHF)</h2>
           <span id="balancePill" class="badgeish">–</span>
         </div>
         <div class="big" id="balanceCHF">CHF –</div>
-        <div class="subbig" id="balanceEUR">EUR –</div>
-        <hr style="border-color:var(--line);opacity:1;">
-        <div class="smallcaps">
-          Berechnung aus <span class="kbd">history</span>: <span class="in">in</span> addiert, <span class="out">out</span> subtrahiert, je Währung separat.
-        </div>
+        <div class="subbig">Saldo basiert auf History, alles in CHF (EUR wird umgerechnet falls kein CHF angegeben).</div>
       </div>
     </div>
 
     <div class="cardish">
       <div class="sectionhead">
-        <h2><i class="bi bi-clock-history"></i> Bezahlhistorie</h2>
-        <span class="badgeish"><i class="bi bi-paperclip"></i> Belege: /receipts</span>
+        <h2><i class="bi bi-clock-history"></i> Historie</h2>
+        <span class="badgeish"><i class="bi bi-paperclip"></i> /receipts</span>
       </div>
       <div class="table-responsive">
         <table>
@@ -109,11 +87,10 @@
             <tr>
               <th>Datum</th>
               <th class="tcenter">Typ</th>
-              <th class="tright">CHF</th>
-              <th class="tright">EUR</th>
+              <th class="tright">Original</th>
+              <th class="tright">Δ CHF</th>
               <th class="tcenter">Belege</th>
               <th class="tright">Saldo CHF</th>
-              <th class="tright">Saldo EUR</th>
             </tr>
           </thead>
           <tbody id="historyBody"></tbody>
@@ -125,33 +102,35 @@
   </div>
 
   <script>
-    const fmt = (n, cur) => {
-      const x = Number(n || 0);
-      return new Intl.NumberFormat("de-CH", { style:"currency", currency:cur, minimumFractionDigits:2, maximumFractionDigits:2 }).format(x);
-    };
-
     const safe = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-
-    const sumDueCHF = (payments) =>
-      payments.reduce((acc, p) => acc + (p && p.paid ? 0 : Number(p.amount_chf ?? p.amount ?? 0)), 0);
-
-    const sumDueEUR = (payments) =>
-      payments.reduce((acc, p) => acc + (p && p.paid ? 0 : Number(p.amount_eur ?? 0)), 0);
-
-    const calcBalances = (history) => {
-      let chf = 0, eur = 0;
-      for (const h of history) {
-        const sign = (h.type === "in") ? 1 : -1;
-        chf += sign * Number(h.amount_chf ?? h.amount ?? 0);
-        eur += sign * Number(h.amount_eur ?? 0);
-      }
-      return { chf, eur };
-    };
+    const fmtCHF = (n) => new Intl.NumberFormat("de-CH",{style:"currency",currency:"CHF",minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(n||0));
+    const fmtEUR = (n) => new Intl.NumberFormat("de-CH",{style:"currency",currency:"EUR",minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(n||0));
 
     const parseDate = (d) => {
-      const s = String(d ?? "");
-      const t = Date.parse(s);
+      const t = Date.parse(String(d ?? ""));
       return Number.isFinite(t) ? t : 0;
+    };
+
+    const toChf = (h, fxGlobal) => {
+      const chf = h?.amount_chf;
+      if (chf !== undefined && chf !== null && chf !== "") return Number(chf) || 0;
+
+      const eur = h?.amount_eur;
+      if (eur !== undefined && eur !== null && eur !== "") {
+        const fx = Number(h?.fx_eur_chf ?? fxGlobal) || 0;
+        return (Number(eur) || 0) * fx;
+      }
+
+      return 0;
+    };
+
+    const originalLabel = (h) => {
+      const hasCHF = h?.amount_chf !== undefined && h?.amount_chf !== null && h?.amount_chf !== "";
+      const hasEUR = h?.amount_eur !== undefined && h?.amount_eur !== null && h?.amount_eur !== "";
+      if (hasCHF && hasEUR) return safe(fmtCHF(h.amount_chf) + " + " + fmtEUR(h.amount_eur));
+      if (hasCHF) return safe(fmtCHF(h.amount_chf));
+      if (hasEUR) return safe(fmtEUR(h.amount_eur));
+      return `<span class="muted">–</span>`;
     };
 
     async function main(){
@@ -160,57 +139,47 @@
         if(!res.ok) throw new Error("data.yml nicht gefunden (Status " + res.status + ")");
         const text = await res.text();
         const data = jsyaml.load(text);
+
         const payments = Array.isArray(data?.payments) ? data.payments : [];
         const history  = Array.isArray(data?.history) ? data.history : [];
 
-        const now = new Date();
-        document.getElementById("meta").textContent = "Stand: " + now.toLocaleString("de-CH");
+        const fxGlobal = Number(data?.fx?.eur_chf ?? 0.95) || 0.95;
 
-        const dueCHF = sumDueCHF(payments);
-        const dueEUR = sumDueEUR(payments);
-        const dueBits = [];
-        if (Math.abs(dueCHF) > 1e-9) dueBits.push(fmt(dueCHF, "CHF"));
-        if (Math.abs(dueEUR) > 1e-9) dueBits.push(fmt(dueEUR, "EUR"));
-        document.getElementById("duePill").textContent = "offen: " + (dueBits.length ? dueBits.join(" / ") : "0");
+        document.getElementById("fxPill").innerHTML = `<i class="bi bi-currency-exchange"></i> EUR→CHF: ${safe(fxGlobal.toFixed(4))}`;
+        document.getElementById("meta").textContent = "Stand: " + new Date().toLocaleString("de-CH");
+
+        const due = payments.reduce((acc,p)=>acc + (!!p.paid ? 0 : Number(p.amount_chf ?? p.amount ?? 0)), 0);
+        document.getElementById("duePill").textContent = "offen: " + fmtCHF(due);
 
         const list = document.getElementById("paymentsList");
         list.innerHTML = payments.map(p => {
           const paid = !!p.paid;
           const chf = Number(p.amount_chf ?? p.amount ?? 0);
-          const eur = Number(p.amount_eur ?? 0);
-
-          const bits = [];
-          if (Math.abs(chf) > 1e-9) bits.push(`<span class="amt">${safe(fmt(chf,"CHF"))}</span>`);
-          if (Math.abs(eur) > 1e-9) bits.push(`<span class="amt"><small>${safe(fmt(eur,"EUR"))}</small></span>`);
-          const right = bits.length ? bits.join(" &nbsp; ") : `<span class="muted">–</span>`;
-
           return `
             <div class="person ${paid ? "paid":"unpaid"}">
               <div class="name">
                 <span class="dot ${paid ? "good":"bad"}"></span>
                 <span>${safe(p.name)}</span>
               </div>
-              <div>${right}</div>
+              <div>${safe(fmtCHF(chf))}</div>
             </div>
           `;
         }).join("");
 
-        const sortedHist = [...history].sort((a,b) => parseDate(a.date) - parseDate(b.date));
+        const sorted = [...history].sort((a,b)=>parseDate(a.date)-parseDate(b.date));
 
-        let runCHF = 0, runEUR = 0;
-        const rows = sortedHist.map(h => {
+        let running = 0;
+        const rows = sorted.map(h => {
           const sign = (h.type === "in") ? 1 : -1;
-          const chf = Number(h.amount_chf ?? h.amount ?? 0);
-          const eur = Number(h.amount_eur ?? 0);
-          runCHF += sign * chf;
-          runEUR += sign * eur;
+          const chf = toChf(h, fxGlobal);
+          const delta = sign * chf;
+          running += delta;
 
           const typeLabel = (h.type === "in") ? `<span class="in">IN</span>` : `<span class="out">OUT</span>`;
-          const chfCell = (Math.abs(chf) > 1e-9) ? `<span class="${h.type === "in" ? "in":"out"}">${safe(fmt(sign*chf, "CHF"))}</span>` : `<span class="muted">–</span>`;
-          const eurCell = (Math.abs(eur) > 1e-9) ? `<span class="${h.type === "in" ? "in":"out"}">${safe(fmt(sign*eur, "EUR"))}</span>` : `<span class="muted">–</span>`;
+          const deltaCell = `<span class="${h.type === "in" ? "in":"out"}">${safe(fmtCHF(delta))}</span>`;
 
-          let links = "–";
           const recs = Array.isArray(h.receipts) ? h.receipts : [];
+          let links = "–";
           if (recs.length){
             links = `<span class="links">${
               recs.map(r => `<a href="receipts/${encodeURIComponent(r)}" target="_blank" rel="noopener"><i class="bi bi-file-earmark-pdf"></i></a>`).join("")
@@ -221,25 +190,17 @@
             <tr>
               <td>${safe(h.date)}</td>
               <td class="tcenter">${typeLabel}</td>
-              <td class="tright">${chfCell}</td>
-              <td class="tright">${eurCell}</td>
+              <td class="tright">${originalLabel(h)}</td>
+              <td class="tright">${deltaCell}</td>
               <td class="tcenter">${links}</td>
-              <td class="tright">${safe(fmt(runCHF,"CHF"))}</td>
-              <td class="tright">${safe(fmt(runEUR,"EUR"))}</td>
+              <td class="tright">${safe(fmtCHF(running))}</td>
             </tr>
           `;
         }).join("");
 
-        document.getElementById("historyBody").innerHTML = rows || `<tr><td colspan="7" class="muted">Keine Einträge</td></tr>`;
-
-        const bal = calcBalances(history);
-        document.getElementById("balanceCHF").textContent = fmt(bal.chf, "CHF");
-        document.getElementById("balanceEUR").textContent = (Math.abs(bal.eur) > 1e-9) ? fmt(bal.eur, "EUR") : "EUR 0.00";
-
-        const balBits = [];
-        if (Math.abs(bal.chf) > 1e-9) balBits.push(fmt(bal.chf, "CHF"));
-        if (Math.abs(bal.eur) > 1e-9) balBits.push(fmt(bal.eur, "EUR"));
-        document.getElementById("balancePill").textContent = balBits.length ? balBits.join(" / ") : "0";
+        document.getElementById("historyBody").innerHTML = rows || `<tr><td colspan="6" class="muted">Keine Einträge</td></tr>`;
+        document.getElementById("balanceCHF").textContent = fmtCHF(running);
+        document.getElementById("balancePill").textContent = fmtCHF(running);
       } catch(e){
         const box = document.getElementById("errorBox");
         box.style.display = "block";
