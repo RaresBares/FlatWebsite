@@ -4,64 +4,51 @@ fx:
 
 payments:
   - name: Pia
-    amount_chf: 10
+    amount_chf: 50
     paid: true
-  - name: Fred
-    amount_chf: 10
+  - name: Pedro
+    amount_chf: 50
     paid: true
   - name: Rares
-    amount_chf: 10
+    amount_chf: 50
     paid: true
-  - name: Ding
-    amount_chf: 10
+  - name: Mate
+    amount_chf: 50
     paid: true
-  - name: Magdalena
+  - name: Romeo
     amount_chf: 5
     paid: true
   - name: Nicolas
     amount_chf: 5
     paid: true
   - name: Duru
-    amount_chf: 10
+    amount_chf: 50
     paid: true
-  - name: Mengze
-    amount_chf: 10
+  - name: Sunny
+    amount_chf: 50
     paid: true
   - name: Felix
-    amount_chf: 10
+    amount_chf: 50
     paid: true
-  - name: Alan
-    amount_chf: 10
+  - name: Giuseppe
+    amount_chf: 50
     paid: true
 
 history:
-  - date: "2025-07-28"
+  - date: "2026-01-10"
     type: in
-    amount_chf: 90
+    amount_chf: 460
     receipts: []
-  - date: "2025-07-29"
+  - date: "2026-01-11"
     type: out
-    amount_chf: 30.98
+    amount_chf: 460
+    amount_eur: 76.59
+    amount_chf: 71.17
     receipts:
-      - beleg1.pdf
-  - date: "2025-07-30"
+      - receipt1.jpg
+  - date: "2026-01-11"
     type: out
-    amount_chf: 52.04
-    receipts:
-      - beleg2.pdf
-  - date: "2025-08-02"
-    type: out
-    amount_eur: 18.40
-    receipts:
-      - ikea_0802.pdf
-  - date: "2025-08-03"
-    type: in
-    amount_chf: 20
-    amount_eur: 10
-    receipts: []
-  - date: "2025-08-04"
-    type: out
-    amount_eur: 12.00
-    fx_eur_chf: 0.97
-    receipts:
-      - migros_0804.pdf
+    amount_chf: 460
+    amount_chf: 61.80
+    receipts: 
+       receipt1.jpg
