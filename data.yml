@@ -1,0 +1,62 @@
+---
+payments:
+  - name: Pia
+    amount_chf: 10
+    amount_eur: 0
+    paid: true
+  - name: Fred
+    amount_chf: 10
+    paid: true
+  - name: Rares
+    amount_chf: 10
+    paid: true
+  - name: Ding
+    amount_chf: 10
+    paid: false
+  - name: Magdalena
+    amount_chf: 5
+    paid: true
+  - name: Nicolas
+    amount_chf: 5
+    paid: true
+  - name: Duru
+    amount_chf: 10
+    paid: true
+  - name: Mengze
+    amount_chf: 10
+    paid: true
+  - name: Felix
+    amount_chf: 10
+    paid: true
+  - name: Alan
+    amount_chf: 10
+    paid: true
+
+history:
+  - date: "2025-07-28"
+    type: in
+    amount_chf: 90
+    amount_eur: 0
+    receipts: []
+  - date: "2025-07-29"
+    type: out
+    amount_chf: 30.98
+    amount_eur: 0
+    receipts:
+      - beleg1.pdf
+  - date: "2025-07-30"
+    type: out
+    amount_chf: 52.04
+    receipts:
+      - beleg2.pdf
+  - date: "2025-08-02"
+    type: out
+    amount_chf: 0
+    amount_eur: 18.40
+    receipts:
+      - ikea_0802.pdf
+  - date: "2025-08-03"
+    type: in
+    amount_chf: 0
+    amount_eur: 25
+    receipts: []
