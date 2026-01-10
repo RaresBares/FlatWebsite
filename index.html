@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>WG-Geld</title>
+  <title>HWC33 – WG-Finanzen</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -14,12 +14,12 @@
     body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
     .wrap{max-width:1000px;margin:0 auto;padding:18px;display:grid;gap:14px;}
     .cardish{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);}
-    .title{display:flex;align-items:center;gap:10px;margin:2px 0 14px 0;}
+    .title{display:flex;align-items:center;gap:10px;margin:2px 0 14px 0;flex-wrap:wrap;}
     .title h1{font-size:18px;margin:0;}
     .pill{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:12px;}
     .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
     @media (max-width:900px){.grid2{grid-template-columns:1fr;}}
-    .sectionhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .sectionhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap;}
     .sectionhead h2{font-size:14px;margin:0;color:var(--accent);letter-spacing:.02em;text-transform:uppercase;}
     .badgeish{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:4px 8px;border-radius:999px;font-size:12px;color:var(--muted);}
     .rowgap{display:grid;gap:10px;}
@@ -31,7 +31,7 @@
     .dot.good{background:var(--good);}
     .dot.bad{background:var(--bad);}
     .big{font-size:28px;font-weight:800;}
-    .subbig{font-size:12px;color:var(--muted);margin-top:2px;}
+    .subbig{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4;}
     table{width:100%;}
     thead th{font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:#dfe6ff;background:rgba(110,168,254,.14);border-bottom:1px solid var(--line);padding:10px;}
     tbody td{padding:10px;border-bottom:1px solid var(--line);color:var(--text);}
@@ -42,6 +42,7 @@
     .muted{color:var(--muted);}
     .links a{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.03);text-decoration:none;margin-right:6px;}
     .links a:hover{border-color:rgba(110,168,254,.55);}
+    .notice{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:16px;padding:12px;color:var(--text);}
     .err{border:1px solid rgba(255,92,92,.4);background:rgba(255,92,92,.08);border-radius:16px;padding:12px;color:#ffd5d5;}
   </style>
 </head>
@@ -51,10 +52,15 @@
     <div class="cardish">
       <div class="title">
         <i class="bi bi-wallet2" style="color:var(--accent);font-size:18px;"></i>
-        <h1>WG-Gelder</h1>
+        <h1>HWC33 – WG-Finanzen</h1>
         <span id="meta" class="pill">lädt…</span>
       </div>
-      <div class="badgeish" id="fxPill"><i class="bi bi-currency-exchange"></i> EUR→CHF: –</div>
+      <div class="notice">
+        Da ist die WG-Finanzwebsite von HWC33. Oben siehst du, wer bezahlt hat. Unten siehst du den aktuellen Kontostand und die komplette Historie inkl. Belegen.
+      </div>
+      <div class="mt-2">
+        <span class="badgeish" id="fxPill"><i class="bi bi-currency-exchange"></i> EUR→CHF: –</span>
+      </div>
     </div>
 
     <div class="grid2">
@@ -72,7 +78,9 @@
           <span id="balancePill" class="badgeish">–</span>
         </div>
         <div class="big" id="balanceCHF">CHF –</div>
-        <div class="subbig">Saldo basiert auf History, alles in CHF (EUR wird umgerechnet falls kein CHF angegeben).</div>
+        <div class="subbig">
+          Konto wird nur in CHF geführt. Wenn ein Historien-Eintrag nur EUR hat, wird er mit dem EUR→CHF Kurs aus <code>fx.eur_chf</code> umgerechnet (oder per Eintrag überschrieben).
+        </div>
       </div>
     </div>
 
@@ -111,22 +119,20 @@
       return Number.isFinite(t) ? t : 0;
     };
 
+    const hasVal = (v) => v !== undefined && v !== null && v !== "";
+
     const toChf = (h, fxGlobal) => {
-      const chf = h?.amount_chf;
-      if (chf !== undefined && chf !== null && chf !== "") return Number(chf) || 0;
-
-      const eur = h?.amount_eur;
-      if (eur !== undefined && eur !== null && eur !== "") {
+      if (hasVal(h?.amount_chf)) return Number(h.amount_chf) || 0;
+      if (hasVal(h?.amount_eur)) {
         const fx = Number(h?.fx_eur_chf ?? fxGlobal) || 0;
-        return (Number(eur) || 0) * fx;
+        return (Number(h.amount_eur) || 0) * fx;
       }
-
       return 0;
     };
 
     const originalLabel = (h) => {
-      const hasCHF = h?.amount_chf !== undefined && h?.amount_chf !== null && h?.amount_chf !== "";
-      const hasEUR = h?.amount_eur !== undefined && h?.amount_eur !== null && h?.amount_eur !== "";
+      const hasCHF = hasVal(h?.amount_chf);
+      const hasEUR = hasVal(h?.amount_eur);
       if (hasCHF && hasEUR) return safe(fmtCHF(h.amount_chf) + " + " + fmtEUR(h.amount_eur));
       if (hasCHF) return safe(fmtCHF(h.amount_chf));
       if (hasEUR) return safe(fmtEUR(h.amount_eur));
