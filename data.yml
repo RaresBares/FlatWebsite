@@ -41,14 +41,12 @@ history:
     receipts: []
   - date: "2026-01-11"
     type: out
-    amount_chf: 460
     amount_eur: 76.59
     amount_chf: 71.17
     receipts:
       - receipt1.jpg
   - date: "2026-01-11"
     type: out
-    amount_chf: 460
     amount_chf: 61.80
     receipts: 
        receipt1.jpg
