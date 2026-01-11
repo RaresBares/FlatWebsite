@@ -1,4 +1,4 @@
-<!-- chores.html (compact list layout) -->
+<!-- chores.html (compact list layout, fits landscape without scrolling) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,53 +9,136 @@
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
 
   <style>
-    :root{--bg:#0f1115;--card:#171a21;--muted:#a9b0bd;--text:#e9ecf2;--accent:#6ea8fe;--line:#252a35;}
-    html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    :root{
+      --bg:#0f1115;--card:#171a21;--muted:#a9b0bd;--text:#e9ecf2;--accent:#6ea8fe;--line:#252a35;
+    }
+    html,body{
+      margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;background:var(--bg);color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
     *{box-sizing:border-box;}
-    .wrap{width:100%;max-width:1100px;margin:0 auto;padding:14px;display:grid;gap:14px;}
-    .cardish{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);}
-    .head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-    .title{display:flex;align-items:center;gap:10px;min-width:0;}
-    .title h1{font-size:16px;margin:0;color:var(--accent);letter-spacing:.02em;text-transform:uppercase;}
-    .pill{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:12px;white-space:nowrap;}
-    .btnrow{display:flex;gap:8px;flex-wrap:wrap;}
+
+    .wrap{
+      width:100%;
+      max-width:1100px;
+      margin:0 auto;
+      padding:10px;
+      display:grid;
+      gap:10px;
+      min-height:100vh;
+      grid-template-rows:auto 1fr;
+    }
+    .cardish{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+
+    .head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+    .title{display:flex;align-items:center;gap:8px;min-width:0;}
+    .title h1{font-size:14px;margin:0;color:var(--accent);letter-spacing:.02em;text-transform:uppercase;}
+    .pill{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      border-radius:999px;
+      padding:4px 8px;
+      color:var(--muted);
+      font-size:11px;
+      white-space:nowrap;
+    }
+    .btnrow{display:flex;gap:6px;flex-wrap:wrap;}
     .btn{
       appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text);
-      padding:8px 10px;border-radius:12px;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;gap:8px;
+      padding:6px 8px;border-radius:10px;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:6px;
+      line-height:1;
     }
     .btn:hover{border-color:rgba(110,168,254,.55);}
 
-    .metaRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
-    .metaRow .pill{padding:5px 9px;}
+    .metaRow{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+    .metaRow .pill{padding:4px 8px;font-size:11px;}
 
     .list{
       display:grid;
-      gap:8px;
-      margin-top:6px;
+      gap:6px;
+      margin-top:0;
+      height:100%;
+      overflow:hidden;
+      align-content:start;
     }
+
     .row{
       border:1px solid var(--line);
       background:rgba(255,255,255,.02);
-      border-radius:14px;
-      padding:10px 12px;
+      border-radius:12px;
+      padding:8px 10px;
       display:grid;
       grid-template-columns: 1.1fr 1fr 2.2fr;
-      gap:10px;
-      align-items:start;
+      gap:8px;
+      align-items:center;
       min-width:0;
+      min-height:44px;
     }
-    @media (max-width:900px){
-      .row{grid-template-columns: 1.2fr 1.2fr;}
-      .desc{grid-column:1 / -1;}
+
+    .who,.what{min-width:0;}
+    .name,.chore{
+      font-weight:900;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      font-size:13px;
+      line-height:1.1;
     }
-    .who{min-width:0;}
-    .name{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .room{color:var(--muted);font-size:12px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .what{min-width:0;}
-    .chore{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .desc{color:var(--muted);font-size:12px;line-height:1.35;min-width:0;word-break:break-word;}
+    .room{
+      color:var(--muted);
+      font-size:11px;
+      margin-top:2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      line-height:1.1;
+    }
+    .desc{
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.15;
+      min-width:0;
+      overflow:hidden;
+      display:-webkit-box;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp:2;
+      word-break:break-word;
+    }
 
     .err{border:1px solid rgba(255,92,92,.4);background:rgba(255,92,92,.08);border-radius:16px;padding:12px;color:#ffd5d5;}
+
+    @media (max-width:900px){
+      .wrap{grid-template-rows:auto auto;}
+      .row{grid-template-columns: 1.2fr 1.2fr;}
+      .desc{grid-column:1 / -1;-webkit-line-clamp:2;}
+      .list{overflow:auto;}
+    }
+
+    @media (orientation:landscape) and (max-height:520px){
+      .wrap{padding:8px;gap:8px;}
+      .cardish{padding:10px;border-radius:14px;}
+      .title h1{font-size:13px;}
+      .pill{font-size:10px;padding:3px 7px;}
+      .btn{font-size:11px;padding:5px 7px;}
+      .metaRow{margin-top:6px;gap:6px;}
+      .row{padding:6px 8px;border-radius:11px;gap:8px;min-height:38px;}
+      .name,.chore{font-size:12px;}
+      .room,.desc{font-size:10px;}
+      .desc{-webkit-line-clamp:1;}
+    }
+
+    @media (orientation:landscape) and (max-height:420px){
+      .wrap{padding:6px;gap:6px;}
+      .cardish{padding:8px;border-radius:12px;}
+      .row{min-height:34px;padding:5px 7px;}
+      .desc{-webkit-line-clamp:1;}
+    }
   </style>
 </head>
 <body>
@@ -81,7 +164,7 @@
 
     <div class="cardish">
       <div class="list" id="list"></div>
-      <div id="errorBox" class="err" style="display:none;margin-top:12px;"></div>
+      <div id="errorBox" class="err" style="display:none;margin-top:10px;"></div>
     </div>
   </div>
 
