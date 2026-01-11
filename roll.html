@@ -1,4 +1,4 @@
-<!-- roll.html -->
+<!-- roll.html (progress bar, auto-scroll inside slides, no top overlay) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -10,86 +10,116 @@
     :root{--bg:#0f1115;--card:#171a21;--muted:#a9b0bd;--text:#e9ecf2;--accent:#6ea8fe;--line:#252a35;}
     html,body{margin:0;padding:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
     *{box-sizing:border-box;}
-    .stage{position:fixed;inset:0;padding:14px;display:grid;}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden;position:relative;}
-    .topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;background:rgba(0,0,0,.25);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.05);z-index:2;}
-    .pill{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:12px;white-space:nowrap;}
-    .title{color:var(--accent);font-weight:900;letter-spacing:.02em;text-transform:uppercase;font-size:12px;white-space:nowrap;}
+
+    .stage{position:fixed;inset:0;padding:14px;}
+    .card{position:relative;width:100%;height:100%;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden;}
+
+    .viewport{position:absolute;inset:0;overflow:hidden;}
     .slide{position:absolute;inset:0;opacity:0;transition:opacity .35s ease;}
     .slide.active{opacity:1;}
-    iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0b0d12;}
-    .center{position:absolute;inset:0;display:grid;place-items:center;padding:60px 18px;}
-    .clock{font-size:84px;font-weight:950;line-height:1;}
-    .date{margin-top:10px;color:var(--muted);font-size:16px;}
-    .weather{margin-top:18px;display:grid;gap:10px;min-width:min(720px, 100%);}
+
+    .scrollbox{
+      position:absolute;inset:0;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:thin;
+      scrollbar-color: rgba(255,255,255,.18) transparent;
+    }
+    .scrollbox::-webkit-scrollbar{width:8px;height:8px;}
+    .scrollbox::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:99px;}
+    .scrollbox::-webkit-scrollbar-track{background:transparent;}
+
+    iframe{width:100%;height:100%;border:0;display:block;background:#0b0d12;}
+
+    .center{min-height:100%;display:grid;place-items:center;padding:40px 18px;}
+    .clock{font-size:92px;font-weight:950;line-height:1;}
+    .date{margin-top:10px;color:var(--muted);font-size:18px;text-align:center;}
+    .weather{margin-top:18px;display:grid;gap:10px;min-width:min(820px, 100%);}
     .wrow{display:flex;gap:10px;flex-wrap:wrap;}
-    .wbox{flex:1;min-width:220px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);border-radius:16px;padding:14px;}
+    .wbox{flex:1;min-width:240px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);border-radius:16px;padding:14px;}
     .wlabel{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
-    .wval{margin-top:6px;font-size:20px;font-weight:900;}
-    .hint{margin-top:22px;color:var(--muted);font-size:12px;}
+    .wval{margin-top:6px;font-size:22px;font-weight:900;}
+
+    .barWrap{
+      position:absolute;left:0;right:0;bottom:0;
+      height:10px;
+      background:rgba(255,255,255,.06);
+      border-top:1px solid rgba(255,255,255,.06);
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background:rgba(110,168,254,.75);
+      transition:width .05s linear;
+    }
   </style>
 </head>
 <body>
   <div class="stage">
     <div class="card">
-      <div class="topbar">
-        <div class="title" id="slideTitle">—</div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <span class="pill" id="cyclePill">cycle: —</span>
-          <span class="pill" id="nowPill">—</span>
+      <div class="viewport">
+
+        <div class="slide active" id="s0">
+          <div class="scrollbox" data-autoscroll="true">
+            <iframe
+              src="https://abfahrtsanzeige.zvv.ch/monitor/#eyJzdGF0aW9ucyI6W3sic3RhdGlvbklEIjoiODU5MTEyMiIsIndhbGtpbmdEaXN0YW5jZSI6NH1dLCJsYW5ndWFnZSI6ImVuIiwiY2xvY2siOiJhbmFsb2ciLCJzaG93Rm9vdHBhdGgiOnRydWUsImhlYWRlclNjYWxpbmciOjEsInJvd1NjYWxpbmciOjEuMiwib3JkZXJJZCI6IjhlZmZlODU2LTQifQ=="
+              referrerpolicy="no-referrer"
+              loading="lazy"
+              allow="fullscreen; geolocation"
+            ></iframe>
+          </div>
         </div>
-      </div>
 
-      <div class="slide" id="s0">
-        <iframe src="https://abfahrtsanzeige.zvv.ch/monitor/#eyJzdGF0aW9ucyI6W3sic3RhdGlvbklEIjoiODU5MTEyMiIsIndhbGtpbmdEaXN0YW5jZSI6NH1dLCJsYW5ndWFnZSI6ImVuIiwiY2xvY2siOiJhbmFsb2ciLCJzaG93Rm9vdHBhdGgiOnRydWUsImhlYWRlclNjYWxpbmciOjEsInJvd1NjYWxpbmciOjEuMiwib3JkZXJJZCI6IjhlZmZlODU2LTQifQ=="
-                referrerpolicy="no-referrer" loading="lazy" allow="fullscreen; geolocation"></iframe>
-      </div>
+        <div class="slide" id="s1">
+          <div class="scrollbox" data-autoscroll="true">
+            <iframe src="./chores.html" loading="lazy"></iframe>
+          </div>
+        </div>
 
-      <div class="slide" id="s1">
-        <iframe src="./chores.html" loading="lazy"></iframe>
-      </div>
-
-      <div class="slide" id="s2">
-        <div class="center">
-          <div style="text-align:center;width:100%;">
-            <div class="clock" id="clock">--:--</div>
-            <div class="date" id="date">—</div>
-            <div class="weather">
-              <div class="wrow">
-                <div class="wbox">
-                  <div class="wlabel">Location</div>
-                  <div class="wval" id="wLoc">Zurich</div>
-                </div>
-                <div class="wbox">
-                  <div class="wlabel">Condition</div>
-                  <div class="wval" id="wCond">—</div>
-                </div>
-              </div>
-              <div class="wrow">
-                <div class="wbox">
-                  <div class="wlabel">Temperature</div>
-                  <div class="wval" id="wTemp">—</div>
-                </div>
-                <div class="wbox">
-                  <div class="wlabel">Wind</div>
-                  <div class="wval" id="wWind">—</div>
+        <div class="slide" id="s2">
+          <div class="scrollbox" data-autoscroll="true">
+            <div class="center">
+              <div style="text-align:center;width:100%;">
+                <div class="clock" id="clock">--:--</div>
+                <div class="date" id="date">—</div>
+                <div class="weather">
+                  <div class="wrow">
+                    <div class="wbox">
+                      <div class="wlabel">Location</div>
+                      <div class="wval">Zurich</div>
+                    </div>
+                    <div class="wbox">
+                      <div class="wlabel">Condition</div>
+                      <div class="wval" id="wCond">—</div>
+                    </div>
+                  </div>
+                  <div class="wrow">
+                    <div class="wbox">
+                      <div class="wlabel">Temperature</div>
+                      <div class="wval" id="wTemp">—</div>
+                    </div>
+                    <div class="wbox">
+                      <div class="wlabel">Wind</div>
+                      <div class="wval" id="wWind">—</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="hint">Weather: Open-Meteo (no key). Clock: local browser time.</div>
           </div>
         </div>
+
       </div>
 
+      <div class="barWrap"><div class="bar" id="bar"></div></div>
     </div>
   </div>
 
   <script>
-    const slides = [
-      { id:"s0", title:"ZVV Departures" },
-      { id:"s1", title:"Chores" },
-      { id:"s2", title:"Clock + Weather" }
-    ];
+    const slides = ["s0","s1","s2"];
+    const DURATION_MS = 25000;
+
+    const bar = document.getElementById("bar");
 
     const weatherCode = (c) => {
       const m = {
@@ -115,7 +145,6 @@
       const mm = String(d.getMinutes()).padStart(2,"0");
       document.getElementById("clock").textContent = `${hh}:${mm}`;
       document.getElementById("date").textContent = d.toLocaleDateString("de-CH",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
-      document.getElementById("nowPill").textContent = d.toLocaleString("de-CH");
     }
 
     async function loadWeatherZurich(){
@@ -133,26 +162,73 @@
       }catch(e){}
     }
 
+    function setActive(idx){
+      slides.forEach((id,i)=>document.getElementById(id).classList.toggle("active", i===idx));
+      const el = document.getElementById(slides[idx]).querySelector(".scrollbox");
+      if(el) el.scrollTop = 0;
+    }
+
+    function startAutoScrollForActive(){
+      const active = document.querySelector(".slide.active .scrollbox");
+      if(!active) return () => {};
+
+      let raf = 0;
+      let last = 0;
+      let dir = 1;
+
+      const step = (t) => {
+        if(!last) last = t;
+        const dt = (t - last);
+        last = t;
+
+        const max = active.scrollHeight - active.clientHeight;
+        if(max <= 2){
+          raf = requestAnimationFrame(step);
+          return;
+        }
+
+        const pxPerSec = 18;
+        active.scrollTop += dir * (pxPerSec * dt / 1000);
+
+        if(active.scrollTop >= max - 1) dir = -1;
+        if(active.scrollTop <= 0) dir = 1;
+
+        raf = requestAnimationFrame(step);
+      };
+
+      raf = requestAnimationFrame(step);
+      return () => cancelAnimationFrame(raf);
+    }
+
     let idx = 0;
-    function show(i){
-      idx = (i + slides.length) % slides.length;
-      for(const s of slides){
-        document.getElementById(s.id).classList.remove("active");
-      }
-      document.getElementById(slides[idx].id).classList.add("active");
-      document.getElementById("slideTitle").textContent = slides[idx].title;
-      document.getElementById("cyclePill").textContent = `cycle: ${idx+1}/${slides.length}`;
+    let slideStart = performance.now();
+    let stopScroll = () => {};
+
+    function nextSlide(){
+      stopScroll();
+      idx = (idx + 1) % slides.length;
+      setActive(idx);
+      slideStart = performance.now();
+      stopScroll = startAutoScrollForActive();
+    }
+
+    function loopBar(t){
+      const p = Math.min(1, (t - slideStart) / DURATION_MS);
+      bar.style.width = (p * 100).toFixed(3) + "%";
+      if(p >= 1) nextSlide();
+      requestAnimationFrame(loopBar);
     }
 
     function start(){
       tickClock();
-      setInterval(tickClock, 1000 * 10);
+      setInterval(tickClock, 10000);
 
       loadWeatherZurich();
-      setInterval(loadWeatherZurich, 1000 * 60 * 10);
+      setInterval(loadWeatherZurich, 10*60*1000);
 
-      show(0);
-      setInterval(() => show(idx+1), 1000 * 20);
+      setActive(0);
+      stopScroll = startAutoScrollForActive();
+      requestAnimationFrame(loopBar);
     }
 
     start();
