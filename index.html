@@ -1,3 +1,4 @@
+<!-- index.html (updated, full) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -84,32 +85,32 @@
 
     .err{border:1px solid rgba(255,92,92,.4);background:rgba(255,92,92,.08);border-radius:16px;padding:12px;color:#ffd5d5;}
 
-    .zvvHead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-    .zvvHeadLeft{display:flex;align-items:center;gap:10px;min-width:0;}
-    .zvvBtnRow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-    .zvvBtn{
+    .widgetHead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+    .widgetHeadLeft{display:flex;align-items:center;gap:10px;min-width:0;}
+    .widgetBtnRow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .widgetBtn{
       display:inline-flex;align-items:center;gap:8px;
       border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text);
       padding:8px 10px;border-radius:12px;text-decoration:none;
     }
-    .zvvBtn:hover{border-color:rgba(110,168,254,.55);}
-    .zvvFrameWrap{
+    .widgetBtn:hover{border-color:rgba(110,168,254,.55);}
+    .frameWrap{
       border:1px solid var(--line);
       background:rgba(255,255,255,.02);
       border-radius:16px;
       overflow:hidden;
       margin-top:12px;
     }
-    .zvvFrame{
+    .frameWrap.is-fullscreen iframe{height:100vh;}
+    .widgetFrame{
       width:100%;
-      height:520px;
+      height:560px;
       border:0;
       display:block;
       background:#0b0d12;
     }
-    .zvvFrameWrap.is-fullscreen .zvvFrame{height:100vh;}
     @media (max-width:600px){
-      .zvvFrame{height:520px;}
+      .widgetFrame{height:560px;}
     }
 
     *{box-sizing:border-box;}
@@ -136,38 +137,57 @@
     </div>
 
     <div class="cardish" id="zvvCard">
-      <div class="zvvHead">
-        <div class="zvvHeadLeft">
+      <div class="widgetHead">
+        <div class="widgetHeadLeft">
           <i class="bi bi-train-front" style="color:var(--accent);font-size:18px;"></i>
           <div class="sectionhead" style="margin:0;">
             <h2 style="margin:0;">ZVV Abfahrtsanzeige</h2>
           </div>
         </div>
-        <div class="zvvBtnRow">
-          <button class="zvvBtn" type="button" data-bs-toggle="collapse" data-bs-target="#zvvCollapse" aria-expanded="true" aria-controls="zvvCollapse" id="zvvToggleBtn">
-            <i class="bi bi-chevron-up"></i>
-            <span>Collapse</span>
+        <div class="widgetBtnRow">
+          <button class="widgetBtn" type="button" data-bs-toggle="collapse" data-bs-target="#zvvCollapse" aria-expanded="true" aria-controls="zvvCollapse" id="zvvToggleBtn">
+            <i class="bi bi-chevron-up"></i><span>Collapse</span>
           </button>
-          <button class="zvvBtn" type="button" id="zvvFullscreenBtn">
-            <i class="bi bi-arrows-fullscreen"></i>
-            <span>Fullscreen</span>
+          <button class="widgetBtn" type="button" id="zvvFullscreenBtn">
+            <i class="bi bi-arrows-fullscreen"></i><span>Fullscreen</span>
           </button>
-          <a class="zvvBtn" id="zvvOpenNewTab" target="_blank" rel="noopener">
-            <i class="bi bi-box-arrow-up-right"></i>
-            <span>Open</span>
+          <a class="widgetBtn" id="zvvOpenNewTab" target="_blank" rel="noopener">
+            <i class="bi bi-box-arrow-up-right"></i><span>Open</span>
           </a>
         </div>
       </div>
 
       <div class="collapse show" id="zvvCollapse">
-        <div class="zvvFrameWrap" id="zvvFrameWrap">
-          <iframe
-            id="zvvFrame"
-            class="zvvFrame"
-            referrerpolicy="no-referrer"
-            loading="lazy"
-            allow="fullscreen; geolocation"
-          ></iframe>
+        <div class="frameWrap" id="zvvFrameWrap">
+          <iframe id="zvvFrame" class="widgetFrame" referrerpolicy="no-referrer" loading="lazy" allow="fullscreen; geolocation"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="cardish" id="choresCard">
+      <div class="widgetHead">
+        <div class="widgetHeadLeft">
+          <i class="bi bi-bucket" style="color:var(--accent);font-size:18px;"></i>
+          <div class="sectionhead" style="margin:0;">
+            <h2 style="margin:0;">Putzplan</h2>
+          </div>
+        </div>
+        <div class="widgetBtnRow">
+          <button class="widgetBtn" type="button" data-bs-toggle="collapse" data-bs-target="#choresCollapse" aria-expanded="true" aria-controls="choresCollapse" id="choresToggleBtn">
+            <i class="bi bi-chevron-up"></i><span>Collapse</span>
+          </button>
+          <button class="widgetBtn" type="button" id="choresFullscreenBtn">
+            <i class="bi bi-arrows-fullscreen"></i><span>Fullscreen</span>
+          </button>
+          <a class="widgetBtn" id="choresOpenNewTab" target="_blank" rel="noopener">
+            <i class="bi bi-box-arrow-up-right"></i><span>Open</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="collapse show" id="choresCollapse">
+        <div class="frameWrap" id="choresFrameWrap">
+          <iframe id="choresFrame" class="widgetFrame" loading="lazy"></iframe>
         </div>
       </div>
     </div>
@@ -249,17 +269,18 @@
     };
 
     const ZVV_URL = "https://abfahrtsanzeige.zvv.ch/monitor/#eyJzdGF0aW9ucyI6W3sic3RhdGlvbklEIjoiODU5MTEyMiIsIndhbGtpbmdEaXN0YW5jZSI6NH1dLCJsYW5ndWFnZSI6ImVuIiwiY2xvY2siOiJhbmFsb2ciLCJzaG93Rm9vdHBhdGgiOnRydWUsImhlYWRlclNjYWxpbmciOjEsInJvd1NjYWxpbmciOjEuMiwib3JkZXJJZCI6IjhlZmZlODU2LTQifQ==";
+    const CHORES_URL = "./chores.html";
 
-    function setupZvv(){
-      const frame = document.getElementById("zvvFrame");
-      const open = document.getElementById("zvvOpenNewTab");
-      const wrap = document.getElementById("zvvFrameWrap");
-      const fsBtn = document.getElementById("zvvFullscreenBtn");
-      const toggleBtn = document.getElementById("zvvToggleBtn");
-      const collapseEl = document.getElementById("zvvCollapse");
+    function setupWidget(frameId, openId, wrapId, fsBtnId, toggleBtnId, collapseId, url){
+      const frame = document.getElementById(frameId);
+      const open = document.getElementById(openId);
+      const wrap = document.getElementById(wrapId);
+      const fsBtn = document.getElementById(fsBtnId);
+      const toggleBtn = document.getElementById(toggleBtnId);
+      const collapseEl = document.getElementById(collapseId);
 
-      frame.src = ZVV_URL;
-      open.href = ZVV_URL;
+      frame.src = url;
+      open.href = url;
 
       collapseEl.addEventListener("shown.bs.collapse", () => {
         toggleBtn.innerHTML = `<i class="bi bi-chevron-up"></i><span>Collapse</span>`;
@@ -269,9 +290,8 @@
       });
 
       const enterFs = async () => {
-        const el = wrap;
         if (document.fullscreenElement) return;
-        if (el.requestFullscreen) await el.requestFullscreen();
+        if (wrap.requestFullscreen) await wrap.requestFullscreen();
         wrap.classList.add("is-fullscreen");
       };
 
@@ -295,7 +315,8 @@
 
     async function main(){
       try{
-        setupZvv();
+        setupWidget("zvvFrame","zvvOpenNewTab","zvvFrameWrap","zvvFullscreenBtn","zvvToggleBtn","zvvCollapse", ZVV_URL);
+        setupWidget("choresFrame","choresOpenNewTab","choresFrameWrap","choresFullscreenBtn","choresToggleBtn","choresCollapse", CHORES_URL);
 
         const res = await fetch("./data.yml", { cache:"no-store" });
         if(!res.ok) throw new Error("data.yml not found (status " + res.status + ")");
