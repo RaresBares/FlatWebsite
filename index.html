@@ -84,6 +84,34 @@
 
     .err{border:1px solid rgba(255,92,92,.4);background:rgba(255,92,92,.08);border-radius:16px;padding:12px;color:#ffd5d5;}
 
+    .zvvHead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+    .zvvHeadLeft{display:flex;align-items:center;gap:10px;min-width:0;}
+    .zvvBtnRow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .zvvBtn{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text);
+      padding:8px 10px;border-radius:12px;text-decoration:none;
+    }
+    .zvvBtn:hover{border-color:rgba(110,168,254,.55);}
+    .zvvFrameWrap{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+      border-radius:16px;
+      overflow:hidden;
+      margin-top:12px;
+    }
+    .zvvFrame{
+      width:100%;
+      height:520px;
+      border:0;
+      display:block;
+      background:#0b0d12;
+    }
+    .zvvFrameWrap.is-fullscreen .zvvFrame{height:100vh;}
+    @media (max-width:600px){
+      .zvvFrame{height:520px;}
+    }
+
     *{box-sizing:border-box;}
     img,svg,video,canvas{max-width:100%;height:auto;}
     code{word-break:break-word;white-space:normal;}
@@ -104,6 +132,43 @@
       <div class="mt-2 d-flex flex-wrap gap-2">
         <span class="badgeish" id="fxPill"><i class="bi bi-currency-exchange"></i> EUR→CHF: –</span>
         <span class="badgeish" id="duePillTop"><i class="bi bi-exclamation-circle"></i> due: –</span>
+      </div>
+    </div>
+
+    <div class="cardish" id="zvvCard">
+      <div class="zvvHead">
+        <div class="zvvHeadLeft">
+          <i class="bi bi-train-front" style="color:var(--accent);font-size:18px;"></i>
+          <div class="sectionhead" style="margin:0;">
+            <h2 style="margin:0;">ZVV Abfahrtsanzeige</h2>
+          </div>
+        </div>
+        <div class="zvvBtnRow">
+          <button class="zvvBtn" type="button" data-bs-toggle="collapse" data-bs-target="#zvvCollapse" aria-expanded="true" aria-controls="zvvCollapse" id="zvvToggleBtn">
+            <i class="bi bi-chevron-up"></i>
+            <span>Collapse</span>
+          </button>
+          <button class="zvvBtn" type="button" id="zvvFullscreenBtn">
+            <i class="bi bi-arrows-fullscreen"></i>
+            <span>Fullscreen</span>
+          </button>
+          <a class="zvvBtn" id="zvvOpenNewTab" target="_blank" rel="noopener">
+            <i class="bi bi-box-arrow-up-right"></i>
+            <span>Open</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="collapse show" id="zvvCollapse">
+        <div class="zvvFrameWrap" id="zvvFrameWrap">
+          <iframe
+            id="zvvFrame"
+            class="zvvFrame"
+            referrerpolicy="no-referrer"
+            loading="lazy"
+            allow="fullscreen; geolocation"
+          ></iframe>
+        </div>
       </div>
     </div>
 
@@ -151,6 +216,8 @@
     <div id="errorBox" class="err" style="display:none;"></div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
   <script>
     const safe = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
     const fmtCHF = (n) => new Intl.NumberFormat("de-CH",{style:"currency",currency:"CHF",minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(n||0));
@@ -181,8 +248,55 @@
       return `<span class="muted">–</span>`;
     };
 
+    const ZVV_URL = "https://abfahrtsanzeige.zvv.ch/monitor/#eyJzdGF0aW9ucyI6W3sic3RhdGlvbklEIjoiODU5MTEyMiIsIndhbGtpbmdEaXN0YW5jZSI6NH1dLCJsYW5ndWFnZSI6ImVuIiwiY2xvY2siOiJhbmFsb2ciLCJzaG93Rm9vdHBhdGgiOnRydWUsImhlYWRlclNjYWxpbmciOjEsInJvd1NjYWxpbmciOjEuMiwib3JkZXJJZCI6IjhlZmZlODU2LTQifQ==";
+
+    function setupZvv(){
+      const frame = document.getElementById("zvvFrame");
+      const open = document.getElementById("zvvOpenNewTab");
+      const wrap = document.getElementById("zvvFrameWrap");
+      const fsBtn = document.getElementById("zvvFullscreenBtn");
+      const toggleBtn = document.getElementById("zvvToggleBtn");
+      const collapseEl = document.getElementById("zvvCollapse");
+
+      frame.src = ZVV_URL;
+      open.href = ZVV_URL;
+
+      collapseEl.addEventListener("shown.bs.collapse", () => {
+        toggleBtn.innerHTML = `<i class="bi bi-chevron-up"></i><span>Collapse</span>`;
+      });
+      collapseEl.addEventListener("hidden.bs.collapse", () => {
+        toggleBtn.innerHTML = `<i class="bi bi-chevron-down"></i><span>Expand</span>`;
+      });
+
+      const enterFs = async () => {
+        const el = wrap;
+        if (document.fullscreenElement) return;
+        if (el.requestFullscreen) await el.requestFullscreen();
+        wrap.classList.add("is-fullscreen");
+      };
+
+      const exitFs = async () => {
+        if (!document.fullscreenElement) return;
+        await document.exitFullscreen();
+        wrap.classList.remove("is-fullscreen");
+      };
+
+      fsBtn.addEventListener("click", async () => {
+        try{
+          if (document.fullscreenElement) await exitFs();
+          else await enterFs();
+        }catch(e){}
+      });
+
+      document.addEventListener("fullscreenchange", () => {
+        if (!document.fullscreenElement) wrap.classList.remove("is-fullscreen");
+      });
+    }
+
     async function main(){
       try{
+        setupZvv();
+
         const res = await fetch("./data.yml", { cache:"no-store" });
         if(!res.ok) throw new Error("data.yml not found (status " + res.status + ")");
         const text = await res.text();
