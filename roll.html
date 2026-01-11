@@ -1,0 +1,161 @@
+<!-- roll.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>WG – Roll</title>
+
+  <style>
+    :root{--bg:#0f1115;--card:#171a21;--muted:#a9b0bd;--text:#e9ecf2;--accent:#6ea8fe;--line:#252a35;}
+    html,body{margin:0;padding:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    *{box-sizing:border-box;}
+    .stage{position:fixed;inset:0;padding:14px;display:grid;}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden;position:relative;}
+    .topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;background:rgba(0,0,0,.25);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.05);z-index:2;}
+    .pill{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:12px;white-space:nowrap;}
+    .title{color:var(--accent);font-weight:900;letter-spacing:.02em;text-transform:uppercase;font-size:12px;white-space:nowrap;}
+    .slide{position:absolute;inset:0;opacity:0;transition:opacity .35s ease;}
+    .slide.active{opacity:1;}
+    iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0b0d12;}
+    .center{position:absolute;inset:0;display:grid;place-items:center;padding:60px 18px;}
+    .clock{font-size:84px;font-weight:950;line-height:1;}
+    .date{margin-top:10px;color:var(--muted);font-size:16px;}
+    .weather{margin-top:18px;display:grid;gap:10px;min-width:min(720px, 100%);}
+    .wrow{display:flex;gap:10px;flex-wrap:wrap;}
+    .wbox{flex:1;min-width:220px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);border-radius:16px;padding:14px;}
+    .wlabel{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
+    .wval{margin-top:6px;font-size:20px;font-weight:900;}
+    .hint{margin-top:22px;color:var(--muted);font-size:12px;}
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="card">
+      <div class="topbar">
+        <div class="title" id="slideTitle">—</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span class="pill" id="cyclePill">cycle: —</span>
+          <span class="pill" id="nowPill">—</span>
+        </div>
+      </div>
+
+      <div class="slide" id="s0">
+        <iframe src="https://abfahrtsanzeige.zvv.ch/monitor/#eyJzdGF0aW9ucyI6W3sic3RhdGlvbklEIjoiODU5MTEyMiIsIndhbGtpbmdEaXN0YW5jZSI6NH1dLCJsYW5ndWFnZSI6ImVuIiwiY2xvY2siOiJhbmFsb2ciLCJzaG93Rm9vdHBhdGgiOnRydWUsImhlYWRlclNjYWxpbmciOjEsInJvd1NjYWxpbmciOjEuMiwib3JkZXJJZCI6IjhlZmZlODU2LTQifQ=="
+                referrerpolicy="no-referrer" loading="lazy" allow="fullscreen; geolocation"></iframe>
+      </div>
+
+      <div class="slide" id="s1">
+        <iframe src="./chores.html" loading="lazy"></iframe>
+      </div>
+
+      <div class="slide" id="s2">
+        <div class="center">
+          <div style="text-align:center;width:100%;">
+            <div class="clock" id="clock">--:--</div>
+            <div class="date" id="date">—</div>
+            <div class="weather">
+              <div class="wrow">
+                <div class="wbox">
+                  <div class="wlabel">Location</div>
+                  <div class="wval" id="wLoc">Zurich</div>
+                </div>
+                <div class="wbox">
+                  <div class="wlabel">Condition</div>
+                  <div class="wval" id="wCond">—</div>
+                </div>
+              </div>
+              <div class="wrow">
+                <div class="wbox">
+                  <div class="wlabel">Temperature</div>
+                  <div class="wval" id="wTemp">—</div>
+                </div>
+                <div class="wbox">
+                  <div class="wlabel">Wind</div>
+                  <div class="wval" id="wWind">—</div>
+                </div>
+              </div>
+            </div>
+            <div class="hint">Weather: Open-Meteo (no key). Clock: local browser time.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const slides = [
+      { id:"s0", title:"ZVV Departures" },
+      { id:"s1", title:"Chores" },
+      { id:"s2", title:"Clock + Weather" }
+    ];
+
+    const weatherCode = (c) => {
+      const m = {
+        0:"Clear",
+        1:"Mainly clear", 2:"Partly cloudy", 3:"Overcast",
+        45:"Fog", 48:"Depositing rime fog",
+        51:"Light drizzle", 53:"Drizzle", 55:"Dense drizzle",
+        56:"Freezing drizzle", 57:"Dense freezing drizzle",
+        61:"Slight rain", 63:"Rain", 65:"Heavy rain",
+        66:"Freezing rain", 67:"Heavy freezing rain",
+        71:"Slight snow", 73:"Snow", 75:"Heavy snow",
+        77:"Snow grains",
+        80:"Rain showers", 81:"Heavy rain showers", 82:"Violent rain showers",
+        85:"Snow showers", 86:"Heavy snow showers",
+        95:"Thunderstorm", 96:"Thunderstorm + hail", 99:"Thunderstorm + heavy hail"
+      };
+      return m[c] ?? ("Code " + c);
+    };
+
+    function tickClock(){
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2,"0");
+      const mm = String(d.getMinutes()).padStart(2,"0");
+      document.getElementById("clock").textContent = `${hh}:${mm}`;
+      document.getElementById("date").textContent = d.toLocaleDateString("de-CH",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+      document.getElementById("nowPill").textContent = d.toLocaleString("de-CH");
+    }
+
+    async function loadWeatherZurich(){
+      try{
+        const lat = 47.3769, lon = 8.5417;
+        const url = "https://api.open-meteo.com/v1/forecast?latitude="+lat+"&longitude="+lon+"&current=temperature_2m,weather_code,wind_speed_10m&timezone=Europe%2FZurich";
+        const res = await fetch(url, { cache:"no-store" });
+        if(!res.ok) return;
+        const j = await res.json();
+        const cur = j?.current;
+        if(!cur) return;
+        document.getElementById("wTemp").textContent = (Number(cur.temperature_2m).toFixed(1) + " °C");
+        document.getElementById("wWind").textContent = (Number(cur.wind_speed_10m).toFixed(0) + " km/h");
+        document.getElementById("wCond").textContent = weatherCode(cur.weather_code);
+      }catch(e){}
+    }
+
+    let idx = 0;
+    function show(i){
+      idx = (i + slides.length) % slides.length;
+      for(const s of slides){
+        document.getElementById(s.id).classList.remove("active");
+      }
+      document.getElementById(slides[idx].id).classList.add("active");
+      document.getElementById("slideTitle").textContent = slides[idx].title;
+      document.getElementById("cyclePill").textContent = `cycle: ${idx+1}/${slides.length}`;
+    }
+
+    function start(){
+      tickClock();
+      setInterval(tickClock, 1000 * 10);
+
+      loadWeatherZurich();
+      setInterval(loadWeatherZurich, 1000 * 60 * 10);
+
+      show(0);
+      setInterval(() => show(idx+1), 1000 * 20);
+    }
+
+    start();
+  </script>
+</body>
+</html>
