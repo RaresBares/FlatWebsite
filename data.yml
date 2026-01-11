@@ -16,10 +16,10 @@ payments:
     amount_chf: 50
     paid: true
   - name: Romeo
-    amount_chf: 5
+    amount_chf: 50
     paid: true
   - name: Nicolas
-    amount_chf: 5
+    amount_chf: 50
     paid: true
   - name: Duru
     amount_chf: 50
