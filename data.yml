@@ -49,4 +49,4 @@ history:
     type: out
     amount_chf: 61.80
     receipts: 
-       receipt1.jpg
+      - receipt1.jpg
