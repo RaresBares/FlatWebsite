@@ -1,0 +1,14 @@
+# chores.yml
+chores:
+  - name: "Kitchen"
+    description: "Wipe counters, stove, sink. Empty bio/regular trash. Sweep + quick mop."
+  - name: "Bathroom"
+    description: "Clean toilet, sink, mirror. Wipe shower. Replace towels if needed."
+  - name: "Vacuum + Floors"
+    description: "Vacuum all common areas + hallway. Mop where needed."
+  - name: "Trash + Recycling"
+    description: "Bring out trash/recycling. Replace bags. Check glass/PET if full."
+  - name: "Fridge + Surfaces"
+    description: "Throw away expired food. Quick wipe of fridge shelves + dining table."
+  - name: "Hall + Entry"
+    description: "Shoes area tidy, wipe entry surfaces, quick sweep entry."
