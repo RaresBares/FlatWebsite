@@ -1,4 +1,4 @@
-<!-- chores.html -->
+<!-- chores.html (compact list layout) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,7 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
 
   <style>
-    :root{--bg:#0f1115;--card:#171a21;--muted:#a9b0bd;--text:#e9ecf2;--accent:#6ea8fe;--good:#20c997;--bad:#ff5c5c;--line:#252a35;}
+    :root{--bg:#0f1115;--card:#171a21;--muted:#a9b0bd;--text:#e9ecf2;--accent:#6ea8fe;--line:#252a35;}
     html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
     *{box-sizing:border-box;}
     .wrap{width:100%;max-width:1100px;margin:0 auto;padding:14px;display:grid;gap:14px;}
@@ -17,37 +17,44 @@
     .head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
     .title{display:flex;align-items:center;gap:10px;min-width:0;}
     .title h1{font-size:16px;margin:0;color:var(--accent);letter-spacing:.02em;text-transform:uppercase;}
-    .pill{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:12px;}
+    .pill{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:12px;white-space:nowrap;}
     .btnrow{display:flex;gap:8px;flex-wrap:wrap;}
     .btn{
       appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text);
       padding:8px 10px;border-radius:12px;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;gap:8px;
     }
     .btn:hover{border-color:rgba(110,168,254,.55);}
-    .grid{
-      display:grid;gap:10px;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-    }
-    @media (min-width:900px){
-      .grid{grid-template-columns:repeat(3, minmax(0,1fr));}
-    }
-    @media (min-width:1100px){
-      .grid{grid-template-columns:repeat(4, minmax(0,1fr));}
-    }
-    .item{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.02);
-      border-radius:16px;
-      padding:12px;
-      min-width:0;
-    }
-    .who{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
-    .who .name{font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .who .room{color:var(--muted);font-size:12px;white-space:nowrap;}
-    .chore{font-weight:800;}
-    .desc{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.35;}
+
     .metaRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
     .metaRow .pill{padding:5px 9px;}
+
+    .list{
+      display:grid;
+      gap:8px;
+      margin-top:6px;
+    }
+    .row{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+      border-radius:14px;
+      padding:10px 12px;
+      display:grid;
+      grid-template-columns: 1.1fr 1fr 2.2fr;
+      gap:10px;
+      align-items:start;
+      min-width:0;
+    }
+    @media (max-width:900px){
+      .row{grid-template-columns: 1.2fr 1.2fr;}
+      .desc{grid-column:1 / -1;}
+    }
+    .who{min-width:0;}
+    .name{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .room{color:var(--muted);font-size:12px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .what{min-width:0;}
+    .chore{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .desc{color:var(--muted);font-size:12px;line-height:1.35;min-width:0;word-break:break-word;}
+
     .err{border:1px solid rgba(255,92,92,.4);background:rgba(255,92,92,.08);border-radius:16px;padding:12px;color:#ffd5d5;}
   </style>
 </head>
@@ -73,7 +80,7 @@
     </div>
 
     <div class="cardish">
-      <div class="grid" id="grid"></div>
+      <div class="list" id="list"></div>
       <div id="errorBox" class="err" style="display:none;margin-top:12px;"></div>
     </div>
   </div>
@@ -133,36 +140,33 @@
       const idx = weekIndexWithinMonth(weekMonday);
       const seed = fnv1a32(seedBase + "|w" + idx);
 
-      const rng = mulberry32(seed);
-      const matesSh = shuffle(mates, rng);
-      const choresSh = shuffle(chores, rng);
+      const rng1 = mulberry32(seed ^ 0xA5A5A5A5);
+      const rng2 = mulberry32(seed ^ 0x5A5A5A5A);
+
+      const matesSh = shuffle(mates, rng1);
+      const choresSh = shuffle(chores, rng2);
 
       const N = matesSh.length;
-      const M = choresSh.length;
-
-      const usedChores = choresSh.slice(0, Math.max(N, Math.min(M, N)));
-      while(usedChores.length < N) usedChores.push(choresSh[usedChores.length % M]);
+      if (choresSh.length < N) throw new Error("chores.yml: need at least as many chores as people (>= " + N + ")");
 
       const shift = ((idx % N) + N) % N;
-      const choresRot = usedChores.slice(shift).concat(usedChores.slice(0, shift));
+      const choresRot = choresSh.slice(shift).concat(choresSh.slice(0, shift));
 
       const out = [];
       for(let i=0;i<N;i++){
         out.push({ mate: matesSh[i], chore: choresRot[i] });
       }
-
       return { seedBase, idx, seed, out };
     }
 
     async function loadYaml(path){
       const res = await fetch(path, { cache:"no-store" });
       if(!res.ok) throw new Error(path + " not found (status " + res.status + ")");
-      const text = await res.text();
-      return jsyaml.load(text);
+      return jsyaml.load(await res.text());
     }
 
     function render(assign, weekMonday){
-      const grid = document.getElementById("grid");
+      const list = document.getElementById("list");
       const start = weekMonday;
       const end = addDays(weekMonday, 6);
 
@@ -171,13 +175,15 @@
       document.getElementById("weekPill").textContent = `week-in-month: ${assign.idx}`;
       document.getElementById("countPill").textContent = `${assign.out.length} people`;
 
-      grid.innerHTML = assign.out.map(x => `
-        <div class="item">
+      list.innerHTML = assign.out.map(x => `
+        <div class="row">
           <div class="who">
             <div class="name">${safe(x.mate.name)}</div>
             <div class="room">${safe(x.mate.room)}</div>
           </div>
-          <div class="chore">${safe(x.chore.name)}</div>
+          <div class="what">
+            <div class="chore">${safe(x.chore.name)}</div>
+          </div>
           <div class="desc">${safe(x.chore.description)}</div>
         </div>
       `).join("");
