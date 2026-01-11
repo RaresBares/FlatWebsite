@@ -1,0 +1,203 @@
+<!-- chores.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Chores</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+
+  <style>
+    :root{--bg:#0f1115;--card:#171a21;--muted:#a9b0bd;--text:#e9ecf2;--accent:#6ea8fe;--good:#20c997;--bad:#ff5c5c;--line:#252a35;}
+    html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;background:transparent;}
+    body{color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    .cardish{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);}
+    .sectionhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap;}
+    .sectionhead h2{font-size:14px;margin:0;color:var(--accent);letter-spacing:.02em;text-transform:uppercase;}
+    .pill{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:12px;display:inline-flex;gap:8px;align-items:center;}
+    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+    @media (max-width:980px){.grid3{grid-template-columns:1fr;}}
+    .weekCard{background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:16px;padding:12px;overflow:hidden;}
+    .weekTitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+    .weekTitle .t{font-weight:800;}
+    .weekTitle .d{color:var(--muted);font-size:12px;}
+    .rowgap{display:grid;gap:10px;}
+    .assign{border:1px solid var(--line);border-radius:14px;padding:12px;background:linear-gradient(90deg, rgba(110,168,254,.12), rgba(255,255,255,.02));}
+    .top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+    .who{display:flex;flex-direction:column;min-width:0;}
+    .who .name{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .who .room{color:var(--muted);font-size:12px;margin-top:2px;}
+    .what{display:flex;flex-direction:column;align-items:flex-end;min-width:0;text-align:right;}
+    .what .chore{font-weight:900;}
+    .desc{color:var(--muted);font-size:12px;margin-top:8px;line-height:1.35;}
+    .err{border:1px solid rgba(255,92,92,.4);background:rgba(255,92,92,.08);border-radius:16px;padding:12px;color:#ffd5d5;}
+    *{box-sizing:border-box;}
+  </style>
+</head>
+
+<body>
+  <div class="cardish">
+    <div class="sectionhead">
+      <h2><i class="bi bi-bucket"></i> Chores</h2>
+      <span class="pill" id="meta"><i class="bi bi-dice-5"></i> loading…</span>
+    </div>
+    <div class="grid3" id="weeks"></div>
+    <div id="errorBox" class="err mt-3" style="display:none;"></div>
+  </div>
+
+  <script>
+    const safe = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+    const pad2 = (n) => String(n).padStart(2,"0");
+    const ymd = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+
+    const toMonday = (d) => {
+      const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      const dow = (x.getDay() + 6) % 7;
+      x.setDate(x.getDate() - dow);
+      x.setHours(12,0,0,0);
+      return x;
+    };
+
+    const monthKey = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}`;
+
+    function xfnv1a(str){
+      let h = 2166136261 >>> 0;
+      for (let i=0;i<str.length;i++){
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return h >>> 0;
+    }
+
+    function mulberry32(a){
+      return function(){
+        let t = a += 0x6D2B79F5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function shuffle(arr, seedStr){
+      const a = arr.slice();
+      const rnd = mulberry32(xfnv1a(seedStr));
+      for (let i=a.length-1;i>0;i--){
+        const j = Math.floor(rnd() * (i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function weekIndexInMonth(monday){
+      const first = new Date(monday.getFullYear(), monday.getMonth(), 1);
+      const firstMon = toMonday(first);
+      const diffDays = Math.round((monday - firstMon) / (1000*60*60*24));
+      return Math.floor(diffDays / 7);
+    }
+
+    function parseResidents(mates){
+      const rooms = mates?.rooms ?? {};
+      const entries = Object.entries(rooms).map(([room,name]) => ({ room: String(room), name: String(name) }));
+      const roomNum = (s) => {
+        const m = String(s).match(/(\d+)/);
+        return m ? Number(m[1]) : 1e9;
+      };
+      entries.sort((a,b) => roomNum(a.room) - roomNum(b.room) || a.room.localeCompare(b.room));
+      return entries;
+    }
+
+    function assignmentsForWeek(residents, chores, monday){
+      const N = residents.length;
+      const key = monthKey(monday);
+      const residentsSh = shuffle(residents, `res:${key}`);
+      const choresSh = shuffle(chores, `cho:${key}`);
+
+      const w = weekIndexInMonth(monday);
+      const out = [];
+      for (let i=0;i<N;i++){
+        const r = residentsSh[i];
+        const c = choresSh[(i + w) % choresSh.length];
+        out.push({ resident: r, chore: c });
+      }
+      return out;
+    }
+
+    function fmtWeekRange(monday){
+      const sun = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate()+6);
+      return `${ymd(monday)} → ${ymd(sun)}`;
+    }
+
+    async function loadYaml(path){
+      const res = await fetch(path, { cache:"no-store" });
+      if(!res.ok) throw new Error(path + " not found (status " + res.status + ")");
+      return jsyaml.load(await res.text());
+    }
+
+    async function main(){
+      try{
+        const mates = await loadYaml("./mates.yml");
+        const choresFile = await loadYaml("./chores.yml");
+
+        const residents = parseResidents(mates);
+        const chores = Array.isArray(choresFile?.chores) ? choresFile.chores : [];
+
+        if (!residents.length) throw new Error("mates.yml: no rooms/residents found");
+        if (chores.length < residents.length) throw new Error("chores.yml: need at least as many chores as residents");
+
+        const now = new Date();
+        now.setHours(12,0,0,0);
+
+        const thisMon = toMonday(now);
+        const lastMon = new Date(thisMon.getFullYear(), thisMon.getMonth(), thisMon.getDate()-7);
+        const nextMon = new Date(thisMon.getFullYear(), thisMon.getMonth(), thisMon.getDate()+7);
+
+        const panels = [
+          { id:"last",  icon:"bi-arrow-left",  label:"Last week",  monday:lastMon },
+          { id:"this",  icon:"bi-dot",         label:"This week",  monday:thisMon },
+          { id:"next",  icon:"bi-arrow-right", label:"Next week",  monday:nextMon }
+        ];
+
+        document.getElementById("meta").innerHTML = `<i class="bi bi-calendar-week"></i> ${safe(monthKey(thisMon))} (deterministic)`;
+
+        const weeks = document.getElementById("weeks");
+        weeks.innerHTML = panels.map(p => {
+          const a = assignmentsForWeek(residents, chores, p.monday);
+          return `
+            <div class="weekCard">
+              <div class="weekTitle">
+                <div class="t"><i class="bi ${safe(p.icon)}"></i> ${safe(p.label)}</div>
+                <div class="d">${safe(fmtWeekRange(p.monday))}</div>
+              </div>
+              <div class="rowgap">
+                ${a.map(x => `
+                  <div class="assign">
+                    <div class="top">
+                      <div class="who">
+                        <div class="name">${safe(x.resident.name)}</div>
+                        <div class="room">${safe(x.resident.room)}</div>
+                      </div>
+                      <div class="what">
+                        <div class="chore">${safe(x.chore?.name ?? "")}</div>
+                      </div>
+                    </div>
+                    <div class="desc">${safe(x.chore?.description ?? "")}</div>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          `;
+        }).join("");
+      }catch(e){
+        const box = document.getElementById("errorBox");
+        box.style.display = "block";
+        box.textContent = "Error: " + (e?.message || String(e));
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>
