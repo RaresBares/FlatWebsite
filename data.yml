@@ -49,3 +49,8 @@ history:
     amount_chf: 61.80
     receipts: 
       - receipt1.jpg
+  - date: "2026-01-14"
+    type: out
+    amount_chf: 48.60
+    receipts: 
+      - receipt2.jpg
