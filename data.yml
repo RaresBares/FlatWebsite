@@ -3,34 +3,34 @@ fx:
   eur_chf: 0.95
 
 payments:
-  - name: Pia
+  - name: Giuseppes friend
     amount_chf: 50
-    paid: true
+    paid: false
   - name: Pedro
     amount_chf: 50
-    paid: true
+    paid: false
   - name: Rares
     amount_chf: 50
     paid: true
   - name: Mate
     amount_chf: 50
-    paid: true
+    paid: false
   - name: Romeo
     amount_chf: 50
-    paid: true
+    paid: false
   - name: Nicolas
     amount_chf: 50
-    paid: true
+    paid: false
   - name: Duru
     amount_chf: 50
-    paid: true
+    paid: false
   - name: Sunny
     amount_chf: 50
-    paid: true
+    paid: false
   - name: Felix
     amount_chf: 50
-    paid: true
-  - name: Giuseppe
+    paid: false
+  - name: Fred
     amount_chf: 50
     paid: true
 
