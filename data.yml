@@ -28,7 +28,7 @@ payments:
     amount_chf: 50
     paid: false
   - name: Felix
-    amount_chf: 50
+    amount_chf: 33.80
     paid: false
   - name: Fred
     amount_chf: 50
