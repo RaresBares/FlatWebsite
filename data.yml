@@ -3,7 +3,7 @@ fx:
   eur_chf: 0.95
 
 payments:
-  - name: Giuseppes friend
+  - name: Lorenzo
     amount_chf: 50
     paid: false
   - name: Pedro
