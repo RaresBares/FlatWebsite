@@ -59,3 +59,7 @@ history:
     amount_chf: 203.19
     receipts: 
       - image.png
+  - date: "2026-02-16"
+    type: out
+    amount_chf: 18
+    receipts: []
