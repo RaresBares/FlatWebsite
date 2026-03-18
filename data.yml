@@ -4,34 +4,34 @@ fx:
 
 payments:
   - name: Lorenzo
-    amount_chf: 50
+    amount_chf: 30
     paid: false
   - name: Pedro
-    amount_chf: 50
+    amount_chf: 30
     paid: false
   - name: Rares
-    amount_chf: 50
+    amount_chf: 30
     paid: true
   - name: Mate
-    amount_chf: 50
+    amount_chf: 30
     paid: false
   - name: Romeo
-    amount_chf: 50
+    amount_chf: 30
     paid: false
   - name: Nicolas
-    amount_chf: 50
+    amount_chf: 30
     paid: false
   - name: Duru
-    amount_chf: 50
+    amount_chf: 30
     paid: false
   - name: Sunny
-    amount_chf: 50
+    amount_chf: 30
     paid: false
   - name: Felix
-    amount_chf: 33.80
+    amount_chf: 23.80
     paid: false
   - name: Fred
-    amount_chf: 50
+    amount_chf: 30
     paid: true
 
 history:
