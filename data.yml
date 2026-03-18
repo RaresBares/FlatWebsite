@@ -63,3 +63,7 @@ history:
     type: out
     amount_chf: 18
     receipts: []
+  - date: "2026-03-16"
+    type: out
+    amount_eur: 32.05
+    receipts: []
