@@ -10,7 +10,7 @@ payments:
     amount_chf: 30
     paid: false
   - name: Rares
-    amount_chf: 30
+    amount_chf: 32.17
     paid: true
   - name: Mate
     amount_chf: 30
@@ -19,7 +19,7 @@ payments:
     amount_chf: 30
     paid: false
   - name: Nicolas
-    amount_chf: 30
+    amount_chf: 27.83
     paid: false
   - name: Duru
     amount_chf: 30
