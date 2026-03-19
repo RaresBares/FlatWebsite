@@ -8,7 +8,7 @@ payments:
     paid: true
   - name: Pedro
     amount_chf: 30
-    paid: false
+    paid: true
   - name: Rares
     amount_chf: 32.17
     paid: true
