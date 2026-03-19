@@ -26,7 +26,7 @@ payments:
     paid: false
   - name: Sunny
     amount_chf: 30
-    paid: false
+    paid: true
   - name: Felix
     amount_chf: 23.80
     paid: false
@@ -66,4 +66,8 @@ history:
   - date: "2026-03-16"
     type: out
     amount_eur: 32.05
+    receipts: []
+  - date: "2026-03-16"
+    type: out
+    amount_chf: 8
     receipts: []
