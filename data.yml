@@ -20,7 +20,7 @@ payments:
     paid: true
   - name: Nicolas
     amount_chf: 27.83
-    paid: false
+    paid: true
   - name: Duru
     amount_chf: 30
     paid: true
