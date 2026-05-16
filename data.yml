@@ -4,34 +4,34 @@ fx:
 
 payments:
   - name: Lorenzo
-    amount_chf: 40
+    amount_chf: 30
     paid: false
   - name: Pedro
-    amount_chf: 40
+    amount_chf: 30
     paid: false
   - name: Rares
-    amount_chf: 40
+    amount_chf: 30
     paid: true
   - name: Mate
-    amount_chf: 40
+    amount_chf: 30
     paid: true
   - name: Romeo
-    amount_chf: 40
+    amount_chf: 30
     paid: false
   - name: Nicolas
-    amount_chf: 40
+    amount_chf: 30
     paid: false
   - name: Duru
-    amount_chf: 40
+    amount_chf: 30
     paid: false
   - name: Sunny
-    amount_chf: 40
+    amount_chf: 30
     paid: false
   - name: Felix
-    amount_chf: 40
+    amount_chf: 30
     paid: false
   - name: Fred
-    amount_chf: 40
+    amount_chf: 30
     paid: true
 
 history:
@@ -74,4 +74,8 @@ history:
   - date: "2026-04-25"
     type: out
     amount_chf: 17
+    receipts: []
+  - date: "2026-05-13"
+    type: out
+    amount_chf: 10
     receipts: []
