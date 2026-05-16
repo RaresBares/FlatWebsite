@@ -5,10 +5,10 @@ fx:
 payments:
   - name: Lorenzo
     amount_chf: 40
-    paid: true
+    paid: false
   - name: Pedro
     amount_chf: 40
-    paid: true
+    paid: false
   - name: Rares
     amount_chf: 40
     paid: true
@@ -17,19 +17,19 @@ payments:
     paid: true
   - name: Romeo
     amount_chf: 40
-    paid: true
+    paid: false
   - name: Nicolas
     amount_chf: 40
-    paid: true
+    paid: false
   - name: Duru
     amount_chf: 40
-    paid: true
+    paid: false
   - name: Sunny
     amount_chf: 40
-    paid: true
+    paid: false
   - name: Felix
     amount_chf: 40
-    paid: true
+    paid: false
   - name: Fred
     amount_chf: 40
     paid: true
